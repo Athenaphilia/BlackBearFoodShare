@@ -17,17 +17,17 @@ struct FoodshareRow: View {
     }()
     
     var body: some View {
-        HStack {
+        VStack {
             AsyncImage(url: URL(string: item.imageURL)) { image in
                 image.resizable().scaledToFill()
             } placeholder: {
                 ProgressView()
             }
-            .frame(width: 60, height: 60)
+            .frame(width: 300, height: 300)
             .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading) {
-                Text(item.name).font(.headline)
+                Text(item.name).font(.largeTitle)
                 Text("Ends at: \(formatter.string(from: item.endTime))")
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -36,4 +36,8 @@ struct FoodshareRow: View {
         }
         .padding(.vertical, 6)
     }
+}
+
+#Preview {
+    FoodshareRow(item: sampleFoodshareItems[0])
 }

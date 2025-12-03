@@ -14,7 +14,9 @@ struct FoodshareListView: View {
     var body: some View {
         NavigationView {
             List(items) { item in
-                FoodshareRow(item: item)
+                NavigationLink(destination: FoodshareItemView(item: item)) {
+                    FoodshareRow(item: item)
+                }
             }
             .navigationTitle("Foodshare")
         }
