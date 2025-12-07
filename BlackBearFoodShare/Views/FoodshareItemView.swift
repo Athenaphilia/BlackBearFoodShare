@@ -48,7 +48,13 @@ struct FoodshareItemView: View {
                     Text(item.name)
                         .font(.largeTitle)
                         .bold()
-
+                    ForEach(item.foodRestrictions, id: \.self) { restriction in
+                        HStack {
+                            Image(systemName: "checkmark.circle")
+                                .foregroundColor(.green)
+                            Text(restriction)
+                        }
+                    }
                     Text("Ends: \(dateFormatter.string(from: item.endTime))")
                         .font(.headline)
                         .foregroundColor(.secondary)
