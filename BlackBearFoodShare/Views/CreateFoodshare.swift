@@ -19,6 +19,7 @@ struct CreateFoodshare: View {
 
     var body: some View {
         VStack{
+            Text("Creating Foodshare")
             Form {
                 TextField(text: $name, prompt: Text("Enter Name")) {
                     Text("Name")
