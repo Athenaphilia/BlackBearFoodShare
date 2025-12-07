@@ -86,7 +86,6 @@ struct FoodShareCreationView: View {
         }
     }
 
-    // MARK: - Helpers
 
     private func addRestriction() {
         let trimmed = newRestriction.trimmingCharacters(in: .whitespaces)

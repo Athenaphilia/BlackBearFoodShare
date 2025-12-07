@@ -37,5 +37,5 @@ struct FoodshareListView: View {
 
 
 #Preview {
-    FoodshareListView()
+    FoodshareListView().environmentObject(FoodshareStore())
 }
