@@ -13,4 +13,5 @@ struct FoodshareItem: Identifiable {
     let name: String
     let endTime: Date
     let imageURL: String
+    let location: String
 }

@@ -9,16 +9,23 @@
 import SwiftUI
 
 struct FoodshareListView: View {
+    @StateObject var data = SData()
     let items = sampleFoodshareItems
     
     var body: some View {
-        NavigationView {
-            List(items) { item in
-                NavigationLink(destination: FoodshareItemView(item: item)) {
-                    FoodshareRow(item: item)
+        NavigationStack {
+            VStack{
+                List(data.foodshareItems) { item in
+                    NavigationLink(destination: FoodshareItemView(item: item)) {
+                        FoodshareRow(item: item)
+                    }
+                }
+                .navigationTitle("Foodshare")
+                
+                NavigationLink("Create foodshare") {
+                    CreateFoodshare(data: data)
                 }
             }
-            .navigationTitle("Foodshare")
         }
     }
 }
