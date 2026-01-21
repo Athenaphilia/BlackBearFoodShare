@@ -58,6 +58,8 @@ struct FoodshareItemView: View {
                     Text("Ends: \(dateFormatter.string(from: item.endTime))")
                         .font(.headline)
                         .foregroundColor(.secondary)
+                    
+                    Text("Location: \(item.location)").font(.headline).foregroundColor(.secondary)
                 }
                 .padding(.horizontal)
                 

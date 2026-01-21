@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+internal import Combine
 
 var sampleFoodshareItems = [
     FoodshareItem(
@@ -36,3 +38,6 @@ var sampleFoodshareItems = [
         classRoomNumber: "114"
     )
 ]
+class SData: ObservableObject {
+    @Published var foodshareItems: [FoodshareItem] = sampleFoodshareItems
+}
