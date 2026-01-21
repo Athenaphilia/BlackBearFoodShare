@@ -29,7 +29,7 @@ struct FoodshareListView: View {
             }
             .sheet(isPresented: $showingCreate) {
                 FoodShareCreationView()
-                    .environmentObject(store)   // pass store to creation page
+                    .environmentObject(store)
             }
         }
     }
