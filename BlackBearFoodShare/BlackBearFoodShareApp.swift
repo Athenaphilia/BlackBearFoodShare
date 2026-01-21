@@ -8,14 +8,17 @@
 import SwiftUI
 
 @main
-struct FoodshareApp: App {
+struct MyApp: App {
+    @StateObject var store = FoodshareStore()
+
     var body: some Scene {
         WindowGroup {
             FoodshareListView()
+                .environmentObject(store)
         }
     }
 }
 
 #Preview {
-    FoodshareListView()
+    FoodshareListView().environmentObject(FoodshareStore())
 }

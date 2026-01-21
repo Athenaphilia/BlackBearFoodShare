@@ -9,30 +9,33 @@ import Foundation
 import SwiftUI
 internal import Combine
 
-let sampleFoodshareItems = [
+var sampleFoodshareItems = [
     FoodshareItem(
-        name: "Food Example 1",
+        name: "Computer Science Club Pizza",
         endTime: Date().addingTimeInterval(3600),
-        imageURL: "https://picsum.photos/id/112/200",
-        location: "Williams"
+        description: "Pizza and breadsticks",
+        foodRestrictions: ["Vegetarian"],
+        imageURL: "https://www.momsandmunchkins.ca/wp-content/uploads/2014/08/pizza-recipes-rockrecipes.jpg",
+        building: "Neville Hall",
+        classRoomNumber: "101"
     ),
     FoodshareItem(
-        name: "Food Example 2",
+        name: "Leftover Sandwiches",
         endTime: Date().addingTimeInterval(7200),
-        imageURL: "https://picsum.photos/id/169/200",
-        location: "Williams"
+        description: "Ham and cheese sandwiches",
+        foodRestrictions: [],
+        imageURL: "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/04/sandwich-recipes-swasthi.jpg",
+        building: "DPC Hall",
+        classRoomNumber: "107"
     ),
     FoodshareItem(
-        name: "Food Example 3",
+        name: "Extra Popcorn",
         endTime: Date().addingTimeInterval(5400),
-        imageURL: "https://picsum.photos/id/189/200",
-        location: "Williams"
-    ),
-    FoodshareItem(
-        name: "Pizza",
-        endTime: Date().addingTimeInterval(5400),
-        imageURL: "https://i.imgur.com/e08nJV7.jpeg",
-        location: "Williams"
+        description: "Buttered and kettle corn",
+        foodRestrictions: [],
+        imageURL: "https://www.popcentralpopcorn.com/cdn/shop/products/partyfavorswebsitephoto2x2_73dbdfdc-97ee-4b2f-893f-cbca7aaf971b_1024x1024.png?v=1640023603",
+        building: "Ferland Hall",
+        classRoomNumber: "114"
     )
 ]
 class SData: ObservableObject {

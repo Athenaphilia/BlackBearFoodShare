@@ -5,27 +5,37 @@
 //  Created by Corey Kaulenas on 12/1/25.
 //
 
-
 import SwiftUI
 
 struct FoodshareListView: View {
-    @StateObject var data = SData()
-    let items = sampleFoodshareItems
-    
+    @EnvironmentObject var store: FoodshareStore
+    @State private var showingCreate = false
+
     var body: some View {
-        NavigationStack {
-            VStack{
-                List(data.foodshareItems) { item in
-                    NavigationLink(destination: FoodshareItemView(item: item)) {
-                        FoodshareRow(item: item)
+        NavigationView {
+            List(store.items) { item in
+                NavigationLink(destination: FoodshareItemView(item: item)) {
+                    FoodshareRow(item: item)
+                }
+            }
+            .navigationTitle("Foodshare")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingCreate = true }) {
+                        Image(systemName: "plus")
+                            .font(.title2)
                     }
                 }
-                .navigationTitle("Foodshare")
-                
-                NavigationLink("Create foodshare") {
-                    CreateFoodshare(data: data)
-                }
+            }
+            .sheet(isPresented: $showingCreate) {
+                FoodShareCreationView()
+                    .environmentObject(store)
             }
         }
     }
+}
+
+
+#Preview {
+    FoodshareListView().environmentObject(FoodshareStore())
 }

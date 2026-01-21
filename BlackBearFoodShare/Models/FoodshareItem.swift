@@ -12,6 +12,9 @@ struct FoodshareItem: Identifiable {
     let id = UUID()
     let name: String
     let endTime: Date
+    let description: String
+    let foodRestrictions: Array<String>
     let imageURL: String
-    let location: String
+    let building: String
+    let classRoomNumber: String
 }
