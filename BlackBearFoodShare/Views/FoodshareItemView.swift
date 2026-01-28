@@ -10,9 +10,12 @@ import SwiftUI
 struct FoodshareItemView: View {
     let item: FoodshareItem
     
+    // 1. ADD THIS: Allows us to open the maps app
+    @Environment(\.openURL) var openURL
+    
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateStyle = .none // Changed to none if you only care about time, or .medium for both
+        df.dateStyle = .none
         df.timeStyle = .short
         return df
     }()
@@ -76,20 +79,46 @@ struct FoodshareItemView: View {
                     Divider()
 
                     // Location and Time Info
-                    VStack(alignment: .leading, spacing: 5) {
+                    VStack(alignment: .leading, spacing: 10) { // Increased spacing slightly
                         HStack {
                             Image(systemName: "clock")
+                                .frame(width: 24) // Align icons
                             Text("Ends at \(dateFormatter.string(from: item.endTime))")
                         }
+                        .foregroundColor(.secondary)
                         
+                        // 2. UPDATED LOCATION SECTION
                         HStack {
                             Image(systemName: "building.2")
-                            // FIXED: accessing building and classRoomNumber instead of location
+                                .frame(width: 24) // Align icons
+                                .foregroundColor(.secondary)
+                            
                             Text("\(item.building), Room \(item.classRoomNumber)")
+                                .foregroundColor(.secondary)
+                            
+                            Spacer()
+                            
+                            // 3. THE MAP BUTTON
+                            Button {
+                                // This now calls the NEW logic (coordinates), but the code here is the same
+                                if let url = BuildingLocator.shared.mapsURL(for: item.building) {
+                                    openURL(url)
+                                }
+                            } label: {
+                                HStack {
+                                    Text("Get Directions")
+                                        .fontWeight(.semibold)
+                                    Image(systemName: "location.fill")
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                            }
                         }
                     }
                     .font(.headline)
-                    .foregroundColor(.secondary)
                 }
                 .padding(.horizontal)
                 
@@ -100,7 +129,7 @@ struct FoodshareItemView: View {
     }
 }
 
-// Helper to display tags cleanly (Optional, improves UI for restrictions)
+// Helper to display tags cleanly
 struct FlowLayoutShim: View {
     let items: [String]
     var body: some View {

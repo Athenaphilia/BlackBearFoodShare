@@ -7,53 +7,81 @@
 
 import Foundation
 import MapKit
+import CoreLocation
+
+struct BuildingInfo {
+    let address: String
+    let coordinate: CLLocationCoordinate2D
+}
 
 class BuildingLocator {
     static let shared = BuildingLocator()
     
-    // Map of aliases to the full address
-    private let buildingAddresses: [String: String] = [
-        "Ferland Hall": "75 Long Rd. University of Maine Orono, Maine 04469",
-        "Neville Hall": "98 Beddington Rd, Orono, ME 04473 United States",
-        "DPC Hall": "29 Beddington Rd, Orono, ME 04469"
+    private init() {}
+    
+    // Dictionary mapping names to Data
+    // NOTE: Coordinate Format is (Latitude, Longitude)
+    private let buildings: [String: BuildingInfo] = [
+        "Ferland Hall": BuildingInfo(
+            address: "75 Long Rd, Orono, ME 04469",
+            coordinate: CLLocationCoordinate2D(latitude: 44.90245165547136, longitude: -68.66826684585462)
+        ),
+        "Neville Hall": BuildingInfo(
+            address: "98 Beddington Rd, Orono, ME 04473",
+            coordinate: CLLocationCoordinate2D(latitude: 44.9021069559729, longitude: -68.66769620352535)
+        ),
+        "DPC Hall": BuildingInfo(
+            address: "29 Beddington Rd, Orono, ME 04469",
+            coordinate: CLLocationCoordinate2D(latitude: 44.90015986140914, longitude: -68.66660549003154)
+        )
     ]
     
-    public init() {}
-
-    // Returns the address string for the alias
-    public func address(for alias: String) -> String? {
-        buildingAddresses[alias]
-    }
+    // MARK: - Public Accessors
     
+    /// Returns a sorted list of all building names (e.g. ["DPC Hall", "Ferland Hall"...])
     public func allAliases() -> [String] {
-        buildingAddresses.keys.sorted()
+        buildings.keys.sorted()
     }
     
-    // Returns a URL that can be opened directly in Apple Maps or Safari
+    /// Returns the display address string
+    public func address(for alias: String) -> String? {
+        findBuilding(alias)?.address
+    }
+    
+    /// Returns the exact coordinate
+    public func coordinate(for alias: String) -> CLLocationCoordinate2D? {
+        findBuilding(alias)?.coordinate
+    }
+    
+    // MARK: - Map Logic
+    
+    /// Returns a URL that opens Apple Maps using EXACT coordinates
     func mapsURL(for alias: String) -> URL? {
-        guard let address = address(for: alias) else { return nil }
+        guard let info = findBuilding(alias) else { return nil }
         
-        let encoded = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        return URL(string: "https://maps.apple.com/?q=\(encoded)")
+        // We use 'daddr' with Lat,Long to ensure exact navigation
+        let lat = info.coordinate.latitude
+        let long = info.coordinate.longitude
+        
+        // "daddr" = Destination Address.
+        // "q" = Label for the pin (so it says "Ferland Hall" instead of "Dropped Pin")
+        let label = alias.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "https://maps.apple.com/?daddr=\(lat),\(long)&q=\(label)"
+        
+        return URL(string: urlString)
     }
     
-    // Returns something that can be opened in apple maps
-    func mapItem(for alias: String, completion: @escaping (MKMapItem?) -> Void) {
-        guard let address = address(for: alias) else {
-            completion(nil)
-            return
-        }
+    // MARK: - Helper
+    
+    // Helper to handle case-insensitive lookup
+    private func findBuilding(_ alias: String) -> BuildingInfo? {
+        let searchKey = alias.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = address
-        
-        let search = MKLocalSearch(request: request)
-        search.start { response, error in
-            guard let item = response?.mapItems.first else {
-                completion(nil)
-                return
+        for (key, info) in buildings {
+            if key.lowercased() == searchKey {
+                return info
             }
-            completion(item)
         }
+        return nil
     }
 }
