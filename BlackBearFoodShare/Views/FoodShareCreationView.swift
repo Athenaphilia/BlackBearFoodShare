@@ -19,7 +19,6 @@ struct FoodShareCreationView: View {
     @State private var endTime: Date = Date()
     @State private var imageURL: String = ""
 
-    let locator = BuildingLocator()
 
     var body: some View {
         NavigationView {
@@ -37,7 +36,7 @@ struct FoodShareCreationView: View {
 
                 Section(header: Text("Location")) {
                     Picker("Building", selection: $selectedBuilding) {
-                        ForEach(locator.allAliases(), id: \.self) { building in
+                        ForEach(BuildingLocator.shared.allAliases(), id: \.self) { building in
                             Text(building)
                         }
                     }

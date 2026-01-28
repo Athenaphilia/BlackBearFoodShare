@@ -5,10 +5,10 @@
 //  Created by Corey Kaulenas on 12/7/25.
 //
 
-
 import SwiftUI
-import Combine
+internal import Combine
 
+@MainActor
 class FoodshareStore: ObservableObject {
     @Published var items: [FoodshareItem] = sampleFoodshareItems
 

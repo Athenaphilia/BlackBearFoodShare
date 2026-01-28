@@ -7,48 +7,83 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct CreateFoodshare: View {
+    // Assuming SData is a class you have defined elsewhere
     @ObservedObject var data: SData
     @Environment(\.dismiss) private var dismiss
     
+    // Updated state variables to match FoodshareItem struct
     @State private var name: String = ""
-    @State private var location: String = ""
-    @State private var food: String = ""
-    @State private var url: String = ""
-    @State private var endtime: String = ""
+    @State private var description: String = ""
+    @State private var building: String = ""
+    @State private var classRoomNumber: String = ""
+    @State private var imageURL: String = ""
+    @State private var restrictionsString: String = "" // To handle comma-separated input
+    @State private var endTime: Date = Date()
 
     var body: some View {
-        VStack{
-            Text("Creating Foodshare")
+        NavigationView { // Added NavigationView for better form styling
             Form {
-                TextField(text: $name, prompt: Text("Enter Name")) {
-                    Text("Name")
+                Section(header: Text("Details")) {
+                    TextField("Title (e.g. Free Pizza)", text: $name)
+                    
+                    TextField("Description", text: $description)
+                    
+                    TextField("Image URL", text: $imageURL)
+                        .keyboardType(.URL)
+                        .autocapitalization(.none)
                 }
-                TextField(text: $food, prompt: Text("Enter Food")) {
-                    Text("Food")
+                
+                Section(header: Text("Location")) {
+                    TextField("Building Name", text: $building)
+                    TextField("Room Number", text: $classRoomNumber)
                 }
-                TextField(text: $location, prompt: Text("Enter Location")) {
-                    Text("Location")
+                
+                Section(header: Text("Details")) {
+                    // Split string by comma to create the array
+                    TextField("Dietary Tags (comma separated)", text: $restrictionsString)
+                    
+                    // Replaced String input with actual DatePicker
+                    DatePicker("End Time", selection: $endTime, displayedComponents: [.hourAndMinute])
                 }
-                TextField(text: $url, prompt: Text("Enter Image Url")) {
-                    Text("URL")
+                
+                Button("Submit") {
+                    createAndDismiss()
                 }
-                TextField(text: $endtime, prompt: Text("Enter End Time in HH:MM")) {
-                    Text("End Time")
-                }.keyboardType(.numberPad)
+                .disabled(name.isEmpty || building.isEmpty) // Basic validation
             }
-            Button("Submit") {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm"
-                let endTimeFormatted = formatter.date(from: endtime)! // needs error checking
-                let newFoodshare = FoodshareItem(name: name, endTime: endTimeFormatted, imageURL: url, location: location)
-                data.foodshareItems.append(newFoodshare)
-                dismiss() // go back to the FoodshareListView screen
+            .navigationTitle("New Foodshare")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
             }
         }
     }
-}
+    
+    func createAndDismiss() {
+        // Convert comma separated string to Array<String>
+        let restrictionsArray = restrictionsString
+            .components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
 
+        let newFoodshare = FoodshareItem(
+            name: name,
+            endTime: endTime,
+            description: description,
+            foodRestrictions: restrictionsArray,
+            imageURL: imageURL,
+            building: building,
+            classRoomNumber: classRoomNumber
+        )
+        
+        data.foodshareItems.append(newFoodshare)
+        dismiss()
+    }
+}
 #Preview {
     CreateFoodshare(data: SData())
 }
